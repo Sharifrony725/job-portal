@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 use App\Models\Job;
-use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\JobStoreRequest;
+use App\Http\Requests\UpdateJobRequest;
+use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
 {
@@ -14,19 +15,15 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function welcome(Request $request)
+    public function welcome()
     {
-       // dd($request('tag'));
-        $jobs = Job::all();
+        $jobs = Job::latest()->paginate(4);
         return view('welcome',compact('jobs'));
     }
     public function index()
     {
-        return view('backend.job.index', [
-            'jobs' =>  Job::latest()->paginate(2)
-        ]);
-        // $jobs = Job::all();
-        // return view('welcome',compact('jobs'));
+        $jobs = Job::latest()->get();
+        return view('backend.job.index', compact('jobs'));
     }
 
     /**
@@ -68,7 +65,8 @@ class JobController extends Controller
      */
     public function show($id)
     {
-        //
+       $job = Job::find($id);
+       return view('backend.job.show',compact('job'));
     }
 
     /**
@@ -79,7 +77,8 @@ class JobController extends Controller
      */
     public function edit($id)
     {
-        //
+        $job = Job::find($id);
+        return view('backend.job.edit',compact('job'));
     }
 
     /**
@@ -89,9 +88,24 @@ class JobController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateJobRequest $request, $id)
     {
-        //
+        $job = Job::find($id);
+        $job->fill($request->all());
+        if ($request->hasFile('image')) {
+            $destination = public_path('uploads\job/' . $job->image);
+            dd($destination);
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/job', $filename);
+            $job->image = $filename;
+        }
+        $job->save();
+        return redirect()->route('jobs.index')->with('success', 'job Updated Successfully!');
     }
 
     /**
@@ -102,6 +116,12 @@ class JobController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $job = Job::find($id);
+        $destination = public_path('uploads\job/' . $job->image);
+        if (File::exists($destination)) {
+            File::delete($destination);
+        }
+        $job->delete();
+        return  redirect()->route('jobs.index')->with('success', 'job delete successfully!');
     }
 }
