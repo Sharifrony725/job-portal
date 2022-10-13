@@ -22,7 +22,8 @@
         <div class="mx-4">
             <div class="bg-gray-50 border border-gray-200 p-10 rounded">
                 <div class="flex flex-col items-center justify-center text-center">
-                     <img  class="hidden w-48 mr-6 md:block" src="{{ $job->image ? asset('uploads/job/'.$job->image) : asset('assets/images/no-image.png') }}">
+                    <img class="hidden w-48 mr-6 md:block"
+                        src="{{ $job->image ? asset('uploads/job/' . $job->image) : asset('assets/images/no-image.png') }}">
 
                     <h3 class="text-2xl mb-2">{{ $job->job_title }}</h3>
                     <div class="text-xl font-bold mb-4">{{ $job->company_name }}</div>
@@ -56,10 +57,25 @@
                                     class="fa-solid fa-envelope"></i>
                                 {{ $job->email }}</a>
 
-                            <a href="https://test.com" target="_blank"
+                            <a href="#" target="_blank"
                                 class="block bg-black text-white py-2 rounded-xl hover:opacity-80"><i
                                     class="fa-solid fa-globe"></i>
-                                    {{ $job->website }}</a>
+                                {{ $job->website }}</a>
+
+                            <a href="{{ route('jobs.edit', $job->id) }}"
+                                class="block bg-black text-white py-2 rounded-xl hover:opacity-80"><i
+                                    class="fa-solid fa-edit"></i> Edit Job
+                            </a>
+                            <div class="block bg-black text-white py-2 rounded-xl hover:opacity-80">
+                                <form action="{{ route('jobs.destroy', $job->id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button
+                                        onclick="return confirm('Are you sure you want to delete this item?')"class="">
+                                        <i class="fa-solid fa-trash-can"></i>Delete
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

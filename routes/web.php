@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,6 @@ use App\Http\Controllers\JobController;
 Route::get('/', [JobController::class, 'welcome'])->name('home');
 #jobs
 Route::resource('/jobs', JobController::class);
+#users
+Route::resource('/users',UserController::class);
+Route::get('/login',[UserController::class, 'login'])->name('login');
