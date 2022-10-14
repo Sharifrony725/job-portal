@@ -72,7 +72,7 @@
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button
                                         onclick="return confirm('Are you sure you want to delete this item?')"class="">
-                                        <i class="fa-solid fa-trash-can"></i>Delete
+                                        <i class="fa-solid fa-trash-can"></i> Delete Job
                                     </button>
                                 </form>
                             </div>

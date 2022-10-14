@@ -24,3 +24,5 @@ Route::resource('/jobs', JobController::class);
 #users
 Route::resource('/users',UserController::class);
 Route::get('/login',[UserController::class, 'login'])->name('login');
+Route::post('/login',[UserController::class, 'loginSubmit'])->name('login.submit');
+Route::get('/logout',[UserController::class, 'logout'])->name('logout');

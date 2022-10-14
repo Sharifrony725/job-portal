@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserStoreRequest;
 
 class UserController extends Controller
@@ -18,9 +20,26 @@ class UserController extends Controller
     {
         return view('backend.user.index');
     }
+    //login form
     public function login()
     {
        return view('backend.user.login');
+    }
+    //logout
+    public function logout(Request $request)
+    {
+     auth()->logout();
+     $request->session()->invalidate();
+     $request->session()->regenerateToken();
+     return redirect()->route('home')->with('success', 'you have been logged out!');
+    }
+    public function loginSubmit(UserLoginRequest $request){
+        if(Auth::attempt($request->except('_token'))){
+            $request->session()->regenerate();
+            return redirect()->route('home')->with('success','you are now logged In!');
+        }else{
+            return redirect()->route('login')->with('error', 'Invalid Credentials!');
+        }
     }
 
     /**
@@ -45,7 +64,8 @@ class UserController extends Controller
         $user->fill($request->all());
         $user->password = Hash::make($request->password);
         $user->save();
-        return redirect()->route('users.create')->with('success', 'user registration successfully!');
+        auth()->login($user);
+        return redirect()->route('home')->with('success', 'user registration successfully!');
     }
 
     /**
