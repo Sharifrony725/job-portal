@@ -15,14 +15,16 @@ use App\Http\Controllers\UserController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+
 Route::get('/', [JobController::class, 'welcome'])->name('home');
-#jobs
-Route::resource('/jobs', JobController::class);
-#users
-Route::resource('/users',UserController::class);
-Route::get('/login',[UserController::class, 'login'])->name('login');
-Route::post('/login',[UserController::class, 'loginSubmit'])->name('login.submit');
-Route::get('/logout',[UserController::class, 'logout'])->name('logout');
+#jobs routes
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('/jobs', JobController::class);
+});
+#users routes
+Route::group(['middleware' => 'guest'], function () {
+    Route::resource('/users', UserController::class);
+});
+Route::get('/login', [UserController::class, 'login'])->name('login')->middleware('guest');
+Route::post('/login', [UserController::class, 'loginSubmit'])->name('login.submit');
+Route::get('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth');
