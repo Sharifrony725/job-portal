@@ -57,7 +57,7 @@
                         <label for="logo" class="inline-block text-lg mb-2">
                             Current Logo
                         </label>
-                        <img src="{{ asset('uploads/job/' . $job->image) }}" height="300" width="300" alt="">
+                        <img  src="{{ $job->image ? asset('uploads/job/' . $job->image) : asset('assets/images/no-image.png') }}">
                     </div>
                     <div class="mb-6">
                         <label for="logo" class="inline-block text-lg mb-2">
